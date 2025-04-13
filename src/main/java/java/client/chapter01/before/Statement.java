@@ -1,51 +1,3 @@
-# Chapter1. 리팩터링: 첫 번째 예시
-
-- 예제를 통해 설명을 시작하는 것이 이해하기 좋다.
-- 너무 큰 프로그램은 이해하기에 어렵고 너무 작으면 refactoring 의 가치를 느끼기 어렵다.
-
-## 요구사항 분석
-
-- 다양한 연극을 외주로 받아서 공연하는 극단
-- 공연 요청이 들어오면 연극의 장르와 관객 규모를 기초로 비용을 책정한다.
-- 공연료와 별개의 포인트를 지급해서 다음번 의뢰 시 공연료를 할인 받을 수도 있다.
-
-
-play.json
-```json
-{
-  "hamlet": { "name": "Hamlet", "type": "tragedy" },
-  "as-like": { "name": "As You Like It", "type": "comedy" },
-  "othello": { "name": "Othello", "type": "tragedy" }
-}
-```
-
-invoices.json
-
-```json
-[
-  {
-    "customer": "BigCo",
-    "performances": [
-      {
-        "playID": "hamlet",
-        "audience": 55
-      },
-      {
-        "playID": "as-like",
-        "audience": 35
-      },
-      {
-        "playID": "othello",
-        "audience": 40
-      }
-    ]
-  }
-]
-```
-
-공연료 청구서를 출력하는 코드
-
-```java
 package java.client.chapter01.before;
 
 import java.client.chapter01.data.Invoice;
@@ -110,23 +62,3 @@ public class Statement {
 
     }
 }
-
-```
-
-## 예시 프로그램을 본 소감
-
-- 설계가 나쁜 시스템은 수정하기 어렵다. 
-- 원하는 동작을 수행하도록 하기 위해 수정해야 할 부분을 찾고, 기존 코드와 잘 맞물려 작동하게 할 방법을 강구하기가 어렵기 때문이다.
-- 무엇을 수정할지 찾기 어렵다면 실수를 저질러서 버그가 생길 가능성도 높아진다.
-
-
-=> 수백 줄짜리 코드를 수정할 때면 먼저 프로그램의 작동 방식을 더 쉽게 파악할 수 있도록
-코드를 여러 함수와 프로그램 요소로 재구성한다.
-
-> 프로그램이 새로운 기능을 추가하기에 편한 구조가 아니라면, 먼저 기능을 추가하기 쉬운 형태로
-> 리팩토링하고 나서 원하는 기능을 추가한다. 
-
-## 리팩터링의 첫 단계
-
-> 리팩터링하기 전에 제대로 된 테스트부터 마련한다. 테스트는 반드시 자가진단하도록 만든다.
-
