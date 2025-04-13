@@ -13,7 +13,6 @@ public class Statement {
         int totalAmount = 0;
         int volumeCredits = 0;
         StringBuilder result = new StringBuilder("청구 내역 (고객명 : " + invoice.getCustomer() + ")\n");
-        NumberFormat format = NumberFormat.getCurrencyInstance(Locale.US);
 
         for (Performance performance : invoice.getPerformances()) {
 
@@ -25,7 +24,7 @@ public class Statement {
                     String.format(
                             " %s : %s원 (%d석) \n",
                             playFor(performance, plays).getName(),
-                            format.format(thisAmount / 100.0),
+                            usd(thisAmount),
                             performance.getAudience()
                     )
             );
@@ -34,7 +33,7 @@ public class Statement {
 
         }
 
-        result.append(String.format("총액 : %s원\n", format.format(totalAmount / 100.0)));
+        result.append(String.format("총액 : %s원\n", usd(totalAmount)));
         result.append(String.format("적립 포인트 : %d점\n", volumeCredits));
 
         return result.toString();
@@ -78,5 +77,11 @@ public class Statement {
         }
 
         return volumeCredits;
+    }
+
+    private String usd(final int aNumber) {
+        final NumberFormat format = NumberFormat.getCurrencyInstance(Locale.US);
+
+        return format.format(aNumber / 100.0);
     }
 }
