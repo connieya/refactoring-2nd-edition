@@ -11,15 +11,13 @@ public class Statement {
 
     public String statement(Invoice invoice, Map<String, Play> plays) {
         int totalAmount = 0;
-        int volumeCredits = 0;
+
         StringBuilder result = new StringBuilder("청구 내역 (고객명 : " + invoice.getCustomer() + ")\n");
 
         for (Performance performance : invoice.getPerformances()) {
 
             int thisAmount = amountFor(performance, playFor(performance, plays));
-
-            volumeCredits += volumeCreditsFor(performance,plays);
-
+            // 청구 내역을 출력한다.
             result.append(
                     String.format(
                             " %s : %s원 (%d석) \n",
@@ -30,11 +28,11 @@ public class Statement {
             );
 
             totalAmount += thisAmount;
-
         }
 
+
         result.append(String.format("총액 : %s원\n", usd(totalAmount)));
-        result.append(String.format("적립 포인트 : %d점\n", volumeCredits));
+        result.append(String.format("적립 포인트 : %d점\n", totalVolumeCredits(invoice,plays)));
 
         return result.toString();
 
@@ -83,5 +81,14 @@ public class Statement {
         final NumberFormat format = NumberFormat.getCurrencyInstance(Locale.US);
 
         return format.format(aNumber / 100.0);
+    }
+
+    private int totalVolumeCredits(Invoice invoice , Map<String, Play> plays) {
+        int volumeCredits = 0;
+        for (Performance performance : invoice.getPerformances()) {
+            volumeCredits += volumeCreditsFor(performance,plays);
+        }
+
+        return volumeCredits;
     }
 }

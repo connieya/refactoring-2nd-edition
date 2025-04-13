@@ -201,6 +201,14 @@ format 변수 제거하기
 - 함수 선언 바꾸기
 - 단위 변환 로직 (나눗셈)을 함수 내로 위치 이동
 
+```java
+private String usd(final int aNumber) {
+    final NumberFormat format = NumberFormat.getCurrencyInstance(Locale.US);
+
+    return format.format(aNumber / 100.0);
+}
+```
+
 이름짓기는 중요하면서도 쉽지 않은 작업이다. 
 긴 함수를 작게 쪼개는 리팩터링은 이름을 잘 지어야만 효과가 있다.
 이름이 좋으면 함수 본문을 앍지 않고도 무슨 일을 하는지 알 수 있다.
@@ -208,4 +216,61 @@ format 변수 제거하기
 물론 단번에 좋은 이름을 짓기는 쉽지 않다. 따라서 처음에는 당장 떠오르는 
 최선의 이름을 사용하다가, 나중에 더 좋은 이름이 떠오를 때 바꾸는 식이 좋다.
 흔히 코드를 두 번 이상 읽고 나서야 가장 적합한 이름이 떠오르곤 한다.
+
+### volumeCredits 변수 제거하기
+
+- 반복문 쪼개기로 volumeCredits 값이 누적되는 부분을 따로 빼낸다.
+- 문장 슬라이드하기를 적용해서 volumeCredits 변수를 선언하는 문장을 반복문 바로 앞으로 옮긴다.
+
+```java
+public String statement(Invoice invoice, Map<String, Play> plays) {
+  int totalAmount = 0;
+
+  StringBuilder result = new StringBuilder("청구 내역 (고객명 : " + invoice.getCustomer() + ")\n");
+
+  for (Performance performance : invoice.getPerformances()) {
+
+    int thisAmount = amountFor(performance, playFor(performance, plays));
+    // 청구 내역을 출력한다.
+    result.append(
+            String.format(
+                    " %s : %s원 (%d석) \n",
+                    playFor(performance, plays).getName(),
+                    usd(thisAmount),
+                    performance.getAudience()
+            )
+    );
+
+    totalAmount += thisAmount;
+  }
+
+  int volumeCredits = 0;
+  for (Performance performance : invoice.getPerformances()) {
+    volumeCredits += volumeCreditsFor(performance,plays);
+  }
+
+  result.append(String.format("총액 : %s원\n", usd(totalAmount)));
+  result.append(String.format("적립 포인트 : %d점\n", volumeCredits));
+
+  return result.toString();
+
+}
+```
+
+- volumeCredits 값 갱신과 관련한 문장들을 한데 모아두면 임시 변수를 질의 함수로 바꾸기가 수월해진다.
+
+volumeCredits 깂 계산 코드를 함수로 추출하는 작업 부터 한다.
+
+```java
+private int totalVolumeCredits(Invoice invoice , Map<String, Play> plays) {
+        int volumeCredits = 0;
+        for (Performance performance : invoice.getPerformances()) {
+            volumeCredits += volumeCreditsFor(performance,plays);
+        }
+        
+        return volumeCredits;
+    }
+```
+
+함수 추출이 끝나면 volumeCredits 변수를 인라인한다.
 
