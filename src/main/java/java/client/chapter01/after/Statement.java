@@ -9,27 +9,22 @@ import java.util.Map;
 
 public class Statement {
 
-    public String statement(Invoice invoice , Map<String , Play> plays) {
+    public String statement(Invoice invoice, Map<String, Play> plays) {
         int totalAmount = 0;
         int volumeCredits = 0;
         StringBuilder result = new StringBuilder("청구 내역 (고객명 : " + invoice.getCustomer() + ")\n");
-        NumberFormat format =  NumberFormat.getCurrencyInstance(Locale.US);
+        NumberFormat format = NumberFormat.getCurrencyInstance(Locale.US);
 
         for (Performance performance : invoice.getPerformances()) {
-            Play play = plays.get(performance.getPlayID());
 
-            int thisAmount  = amountFor(performance ,play);
+            int thisAmount = amountFor(performance, playFor(performance, plays));
 
-            volumeCredits += Math.max(performance.getAudience() - 30 , 0);
-
-            if ("comedy".equals(play.getType())) {
-                volumeCredits += Math.floor(performance.getAudience() / 5);
-            }
+            volumeCredits += volumeCreditsFor(performance,plays);
 
             result.append(
                     String.format(
                             " %s : %s원 (%d석) \n",
-                            play.getName(),
+                            playFor(performance, plays).getName(),
                             format.format(thisAmount / 100.0),
                             performance.getAudience()
                     )
@@ -39,14 +34,14 @@ public class Statement {
 
         }
 
-        result.append(String.format("총액 : %s원\n" , format.format(totalAmount / 100.0)));
+        result.append(String.format("총액 : %s원\n", format.format(totalAmount / 100.0)));
         result.append(String.format("적립 포인트 : %d점\n", volumeCredits));
 
         return result.toString();
 
     }
 
-    private int amountFor(Performance aPerformance , Play play) {
+    private int amountFor(Performance aPerformance, Play play) {
         int result = 0;
 
         switch (play.getType()) {
@@ -56,10 +51,10 @@ public class Statement {
                     result += 1000 * (aPerformance.getAudience() - 30);
                 }
                 break;
-            case "comedy" :
+            case "comedy":
                 result = 30000;
                 if (aPerformance.getAudience() > 20) {
-                    result += 10000 + 500 *(aPerformance.getAudience() - 20);
+                    result += 10000 + 500 * (aPerformance.getAudience() - 20);
                 }
                 result += 300 * aPerformance.getAudience();
                 break;
@@ -68,5 +63,20 @@ public class Statement {
         }
 
         return result;
+    }
+
+    private Play playFor(Performance aPerformance, Map<String, Play> plays) {
+        return plays.get(aPerformance.getPlayID());
+    }
+
+    private int volumeCreditsFor(Performance aPerformance , Map<String, Play> plays) {
+        int volumeCredits = 0;
+        volumeCredits += Math.max(aPerformance.getAudience() - 30, 0);
+
+        if ("comedy".equals(playFor(aPerformance, plays).getType())) {
+            volumeCredits += (int) Math.floor((double) aPerformance.getAudience() / 5);
+        }
+
+        return volumeCredits;
     }
 }
