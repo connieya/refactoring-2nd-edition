@@ -130,3 +130,49 @@ public class Statement {
 
 > 리팩터링하기 전에 제대로 된 테스트부터 마련한다. 테스트는 반드시 자가진단하도록 만든다.
 
+statement() 함수의 테스트는 어떻게 구성하면 될까? 
+- 이 함수가 문자열을 반환하므로, 다양한 장르의 공연들로 구성된 공연료 청구서 몇 개를 미리 작성하여 문자열 형태로 준비해둔다.
+
+## statement() 함수 쪼개기
+
+### 함수 추출하기
+
+> 리팩터링은 프로그램 수정을 작은 단계로 나눠 진행한다. 그래서 중간에 실수하더라고 버그를 쉽게 찾을 수 있다.
+
+
+```java
+ private int amountFor(Performance aPerformance , Play play) {
+    int result = 0;
+
+    switch (play.getType()) {
+        case "tragedy":
+            result = 40000;
+            if (aPerformance.getAudience() > 30) {
+                result += 1000 * (aPerformance.getAudience() - 30);
+            }
+            break;
+        case "comedy" :
+            result = 30000;
+            if (aPerformance.getAudience() > 20) {
+                result += 10000 + 500 *(aPerformance.getAudience() - 20);
+            }
+            result += 300 * aPerformance.getAudience();
+            break;
+        default:
+            throw new IllegalArgumentException("알 수 없는 장르: " + play.getType());
+    }
+
+    return result;
+}
+```
+
+- 함수 추출하기
+  - 코드가 하는 일을 설명하는 이름을 지어줌으로써, 코드를 분석하며 파악한 정보를 코드에 반영한다.
+- 변수 네이밍 변경하기
+  - 변수의 역할을 쉽게 알 수 있다.
+- 파라미터 네이밍 변경하기
+  - 동적 타입 언어를 사용할 때 타입이 드러나게 작성하면 도움이 된다.
+  - 매개변수의 역할이 뚜렷하지 않을 때는 부정 관사(a/an)을 붙인다.
+
+> 컴퓨터가 이해하는 코드는 바보도 작성할 수 있다. 사람이 이해하도록 작성하는 프로그래머가 진정한 실력자다.
+
