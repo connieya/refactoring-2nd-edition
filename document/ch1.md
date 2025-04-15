@@ -274,3 +274,28 @@ private int totalVolumeCredits(Invoice invoice , Map<String, Play> plays) {
 
 함수 추출이 끝나면 volumeCredits 변수를 인라인한다.
 
+
+### totalAmount 제거하기
+
+위 volumeCredits 변수 제거하기와 똑같은 절차로 제거하기
+
+- 반복문 쪼개기
+- 문장 슬라이드하기
+- 임시 변수를 질의 함수로 바꾸기
+  - 함수 추출하기
+  - 변수 인라인하기
+
+
+## 계산 단계와 포맷팅 단계 분리하기
+
+statement() 의 HTML 버전을 만드는 작업
+
+#### 단계 쪼개기
+
+statement() 의 로직 두 단계로 나누기
+
+#### 함수 추출하기
+
+- 청구 내역을 출력하는 코드
+- 두 단계 사이의 중간 데이터 구조 역할을 할 객체 만들어서 인수로 전달하기
+

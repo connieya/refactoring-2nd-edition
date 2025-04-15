@@ -4,15 +4,22 @@ import java.client.chapter01.data.Invoice;
 import java.client.chapter01.data.Performance;
 import java.client.chapter01.data.Play;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 public class Statement {
 
-    public String statement(Invoice invoice, Map<String, Play> plays) {
-        StringBuilder result = new StringBuilder("청구 내역 (고객명 : " + invoice.getCustomer() + ")\n");
+    public String statement(Invoice invoice , Map<String , Play> plays) {
+        StatementData statementData = new StatementData(invoice.getCustomer(), invoice.getPerformances());
+        return renderPlainText(statementData, invoice, plays);
 
-        for (Performance performance : invoice.getPerformances()) {
+    }
+
+    public String renderPlainText(StatementData data , Map<String, Play> plays) {
+        StringBuilder result = new StringBuilder("청구 내역 (고객명 : " + data.getCustomer() + ")\n");
+
+        for (Performance performance : data.getPerformances()) {
             // 청구 내역을 출력한다.
             result.append(
                     String.format(
@@ -24,8 +31,8 @@ public class Statement {
             );
         }
 
-        result.append(String.format("총액 : %s원\n", usd(totalAmount(invoice, plays ))));
-        result.append(String.format("적립 포인트 : %d점\n", totalVolumeCredits(invoice,plays)));
+        result.append(String.format("총액 : %s원\n", usd(totalAmount(data.getPerformances(), plays ))));
+        result.append(String.format("적립 포인트 : %d점\n", totalVolumeCredits(data.getPerformances(),plays)));
 
         return result.toString();
 
@@ -76,19 +83,19 @@ public class Statement {
         return format.format(aNumber / 100.0);
     }
 
-    private int totalVolumeCredits(Invoice invoice , Map<String, Play> plays) {
+    private int totalVolumeCredits(List<Performance> performances , Map<String, Play> plays) {
         int volumeCredits = 0;
-        for (Performance performance : invoice.getPerformances()) {
-            volumeCredits += volumeCreditsFor(performance,plays);
+        for (Performance performance : performances) {
+            volumeCredits += volumeCreditsFor(performance , plays);
         }
 
         return volumeCredits;
     }
 
-    private int totalAmount(Invoice invoice , Map<String, Play> plays) {
+    private int totalAmount(List<Performance> performances, Map<String, Play> plays) {
         int result = 0;
-        for (Performance performance : invoice.getPerformances()) {
-            result += amountFor(performance, playFor(performance, plays))
+        for (Performance performance : performances) {
+            result += amountFor(performance, playFor(performance, plays));
         }
 
         return result;
