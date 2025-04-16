@@ -8,17 +8,17 @@ public class EnrichPerformance {
     private Play play;
     private int amount;
     private String playID;
-    private PerformanceCalculator performanceCalculator;
     private int audience;
     private int volumeCredit;
 
     public EnrichPerformance(Performance performance , Map<String ,Play> plays) {
+        PerformanceCalculator performanceCalculator= PerformanceCalculator.createPerformanceCalculator(performance,playFor(performance,plays));
+
         this.playID = performance.getPlayID();
         this.audience = performance.getAudience();
-        this.performanceCalculator = new PerformanceCalculator(performance ,playFor(performance,plays));
         this.play = playFor(performance,plays);
-        this.amount = this.performanceCalculator.amountFor();
-        this.volumeCredit = this.performanceCalculator.volumeCreditsFor();
+        this.amount = performanceCalculator.amount();
+        this.volumeCredit = performanceCalculator.volumeCredits();
     }
 
     public int getVolumeCredit() {
