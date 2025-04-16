@@ -1,7 +1,11 @@
 package java.client.chapter01.after;
 
+import java.client.chapter01.data.Invoice;
 import java.client.chapter01.data.Performance;
+import java.client.chapter01.data.Play;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class StatementData {
 
@@ -15,6 +19,18 @@ public class StatementData {
         this.performances = performances;
         this.totalAmount = totalAmount;
         this.totalVolumeCredits = totalVolumeCredits;
+    }
+
+    public static StatementData createStatementData(Invoice invoice , Map<String , Play> plays) {
+        List<EnrichPerformance> performances = invoice.getPerformances().stream()
+                .map(performance -> new EnrichPerformance(performance, plays) )
+                .collect(Collectors.toList());
+
+       return new StatementData(
+               invoice.getCustomer()
+               , performances
+               , totalAmount(performances)
+               , totalVolumeCredits(performances));
     }
 
     public StatementData(String customer, List<EnrichPerformance> performances) {
@@ -54,4 +70,25 @@ public class StatementData {
     public void setTotalVolumeCredits(int totalVolumeCredits) {
         this.totalVolumeCredits = totalVolumeCredits;
     }
+
+    private static int totalVolumeCredits(List<EnrichPerformance> performances) {
+        int volumeCredits = 0;
+        for (EnrichPerformance performance : performances) {
+            volumeCredits += performance.getVolumeCredit();
+        }
+
+        return volumeCredits;
+    }
+
+    private static int totalAmount(List<EnrichPerformance> performances) {
+        int result = 0;
+        for (EnrichPerformance performance : performances) {
+            result += performance.getAmount();
+        }
+
+        return result;
+    }
+
+
+
 }
