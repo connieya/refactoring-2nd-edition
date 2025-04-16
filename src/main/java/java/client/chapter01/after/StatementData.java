@@ -6,9 +6,9 @@ import java.util.List;
 public class StatementData {
 
     private String customer;
-    private List<Performance> performances;
+    private List<EnrichPerformance> performances;
 
-    public StatementData(String customer, List<Performance> performances) {
+    public StatementData(String customer, List<EnrichPerformance> performances) {
         this.customer = customer;
         this.performances = performances;
     }
@@ -22,11 +22,11 @@ public class StatementData {
         this.customer = customer;
     }
 
-    public List<Performance> getPerformances() {
+    public List<EnrichPerformance> getPerformances() {
         return performances;
     }
 
-    public void setPerformances(List<Performance> performances) {
+    public void setPerformances(List<EnrichPerformance> performances) {
         this.performances = performances;
     }
 }

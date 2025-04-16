@@ -1,6 +1,6 @@
 package java.client.chapter01.data;
 
-public class Performance {
+public class  Performance {
     private String playID;
     private int audience;
 

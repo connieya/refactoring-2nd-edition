@@ -7,25 +7,30 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Statement {
 
     public String statement(Invoice invoice , Map<String , Play> plays) {
-        StatementData statementData = new StatementData(invoice.getCustomer(), invoice.getPerformances());
-        return renderPlainText(statementData, invoice, plays);
+        List<EnrichPerformance> performances = invoice.getPerformances().stream()
+                .map(performance -> new EnrichPerformance(performance, playFor(performance, plays) , amountFor(performance ,playFor(performance,plays)),volumeCreditsFor(performance , plays)) )
+                .collect(Collectors.toList());
+
+        StatementData statementData = new StatementData(invoice.getCustomer(), performances);
+        return renderPlainText(statementData,  plays);
 
     }
 
     public String renderPlainText(StatementData data , Map<String, Play> plays) {
         StringBuilder result = new StringBuilder("청구 내역 (고객명 : " + data.getCustomer() + ")\n");
 
-        for (Performance performance : data.getPerformances()) {
+        for (EnrichPerformance performance : data.getPerformances()) {
             // 청구 내역을 출력한다.
             result.append(
                     String.format(
                             " %s : %s원 (%d석) \n",
-                            playFor(performance, plays).getName(),
-                            usd( amountFor(performance, playFor(performance, plays))),
+                            performance.getPlay().getName(),
+                            usd( performance.getAmount()),
                             performance.getAudience()
                     )
             );
@@ -83,19 +88,19 @@ public class Statement {
         return format.format(aNumber / 100.0);
     }
 
-    private int totalVolumeCredits(List<Performance> performances , Map<String, Play> plays) {
+    private int totalVolumeCredits(List<EnrichPerformance> performances , Map<String, Play> plays) {
         int volumeCredits = 0;
-        for (Performance performance : performances) {
-            volumeCredits += volumeCreditsFor(performance , plays);
+        for (EnrichPerformance performance : performances) {
+            volumeCredits += performance.getVolumeCredit();
         }
 
         return volumeCredits;
     }
 
-    private int totalAmount(List<Performance> performances, Map<String, Play> plays) {
+    private int totalAmount(List<EnrichPerformance> performances, Map<String, Play> plays) {
         int result = 0;
-        for (Performance performance : performances) {
-            result += amountFor(performance, playFor(performance, plays));
+        for (EnrichPerformance performance : performances) {
+            result += performance.getAmount();
         }
 
         return result;

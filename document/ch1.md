@@ -9,6 +9,7 @@
 - 공연 요청이 들어오면 연극의 장르와 관객 규모를 기초로 비용을 책정한다.
 - 공연료와 별개의 포인트를 지급해서 다음번 의뢰 시 공연료를 할인 받을 수도 있다.
 
+공연할 연극 정보
 
 play.json
 ```json
@@ -18,6 +19,8 @@ play.json
   "othello": { "name": "Othello", "type": "tragedy" }
 }
 ```
+
+청구서에 들어갈 데이터
 
 invoices.json
 
