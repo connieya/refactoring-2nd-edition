@@ -16,12 +16,12 @@ public class Statement {
                 .map(performance -> new EnrichPerformance(performance, playFor(performance, plays) , amountFor(performance ,playFor(performance,plays)),volumeCreditsFor(performance , plays)) )
                 .collect(Collectors.toList());
 
-        StatementData statementData = new StatementData(invoice.getCustomer(), performances);
-        return renderPlainText(statementData,  plays);
+        StatementData statementData = new StatementData(invoice.getCustomer(), performances ,totalAmount(performances) , totalVolumeCredits(performances));
+        return renderPlainText(statementData);
 
     }
 
-    public String renderPlainText(StatementData data , Map<String, Play> plays) {
+    public String renderPlainText(StatementData data) {
         StringBuilder result = new StringBuilder("청구 내역 (고객명 : " + data.getCustomer() + ")\n");
 
         for (EnrichPerformance performance : data.getPerformances()) {
@@ -36,8 +36,8 @@ public class Statement {
             );
         }
 
-        result.append(String.format("총액 : %s원\n", usd(totalAmount(data.getPerformances(), plays ))));
-        result.append(String.format("적립 포인트 : %d점\n", totalVolumeCredits(data.getPerformances(),plays)));
+        result.append(String.format("총액 : %s원\n", usd(data.getTotalAmount())));
+        result.append(String.format("적립 포인트 : %d점\n", data.getTotalVolumeCredits()));
 
         return result.toString();
 
@@ -88,7 +88,7 @@ public class Statement {
         return format.format(aNumber / 100.0);
     }
 
-    private int totalVolumeCredits(List<EnrichPerformance> performances , Map<String, Play> plays) {
+    private int totalVolumeCredits(List<EnrichPerformance> performances) {
         int volumeCredits = 0;
         for (EnrichPerformance performance : performances) {
             volumeCredits += performance.getVolumeCredit();
@@ -97,7 +97,7 @@ public class Statement {
         return volumeCredits;
     }
 
-    private int totalAmount(List<EnrichPerformance> performances, Map<String, Play> plays) {
+    private int totalAmount(List<EnrichPerformance> performances) {
         int result = 0;
         for (EnrichPerformance performance : performances) {
             result += performance.getAmount();

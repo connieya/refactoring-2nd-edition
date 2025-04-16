@@ -7,6 +7,15 @@ public class StatementData {
 
     private String customer;
     private List<EnrichPerformance> performances;
+    private int totalAmount;
+    private int totalVolumeCredits;
+
+    public StatementData(String customer, List<EnrichPerformance> performances, int totalAmount, int totalVolumeCredits) {
+        this.customer = customer;
+        this.performances = performances;
+        this.totalAmount = totalAmount;
+        this.totalVolumeCredits = totalVolumeCredits;
+    }
 
     public StatementData(String customer, List<EnrichPerformance> performances) {
         this.customer = customer;
@@ -28,5 +37,21 @@ public class StatementData {
 
     public void setPerformances(List<EnrichPerformance> performances) {
         this.performances = performances;
+    }
+
+    public int getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(int totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public int getTotalVolumeCredits() {
+        return totalVolumeCredits;
+    }
+
+    public void setTotalVolumeCredits(int totalVolumeCredits) {
+        this.totalVolumeCredits = totalVolumeCredits;
     }
 }
