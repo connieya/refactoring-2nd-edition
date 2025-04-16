@@ -72,21 +72,15 @@ public class StatementData {
     }
 
     private static int totalVolumeCredits(List<EnrichPerformance> performances) {
-        int volumeCredits = 0;
-        for (EnrichPerformance performance : performances) {
-            volumeCredits += performance.getVolumeCredit();
-        }
-
-        return volumeCredits;
+        return performances.stream()
+                .mapToInt(EnrichPerformance::getVolumeCredit)
+                .sum();
     }
 
     private static int totalAmount(List<EnrichPerformance> performances) {
-        int result = 0;
-        for (EnrichPerformance performance : performances) {
-            result += performance.getAmount();
-        }
-
-        return result;
+        return performances.stream()
+                .mapToInt(EnrichPerformance::getVolumeCredit)
+                .sum();
     }
 
 

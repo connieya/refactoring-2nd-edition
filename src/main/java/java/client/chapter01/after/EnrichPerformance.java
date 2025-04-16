@@ -8,15 +8,17 @@ public class EnrichPerformance {
     private Play play;
     private int amount;
     private String playID;
+    private PerformanceCalculator performanceCalculator;
     private int audience;
     private int volumeCredit;
 
     public EnrichPerformance(Performance performance , Map<String ,Play> plays) {
         this.playID = performance.getPlayID();
         this.audience = performance.getAudience();
+        this.performanceCalculator = new PerformanceCalculator(performance ,playFor(performance,plays));
         this.play = playFor(performance,plays);
-        this.amount = amountFor(performance ,this.play);
-        this.volumeCredit = volumeCreditsFor(performance , plays);
+        this.amount = this.performanceCalculator.amountFor();
+        this.volumeCredit = this.performanceCalculator.volumeCreditsFor();
     }
 
     public int getVolumeCredit() {
@@ -59,42 +61,9 @@ public class EnrichPerformance {
         this.audience = audience;
     }
 
-    private static int amountFor(Performance aPerformance, Play play) {
-        int result = 0;
-
-        switch (play.getType()) {
-            case "tragedy":
-                result = 40000;
-                if (aPerformance.getAudience() > 30) {
-                    result += 1000 * (aPerformance.getAudience() - 30);
-                }
-                break;
-            case "comedy":
-                result = 30000;
-                if (aPerformance.getAudience() > 20) {
-                    result += 10000 + 500 * (aPerformance.getAudience() - 20);
-                }
-                result += 300 * aPerformance.getAudience();
-                break;
-            default:
-                throw new IllegalArgumentException("알 수 없는 장르: " + play.getType());
-        }
-
-        return result;
-    }
-
-    private static Play playFor(Performance aPerformance, Map<String, Play> plays) {
+    private Play playFor(Performance aPerformance, Map<String, Play> plays) {
         return plays.get(aPerformance.getPlayID());
     }
 
-    private static int volumeCreditsFor(Performance aPerformance , Map<String, Play> plays) {
-        int volumeCredits = 0;
-        volumeCredits += Math.max(aPerformance.getAudience() - 30, 0);
 
-        if ("comedy".equals(playFor(aPerformance, plays).getType())) {
-            volumeCredits += (int) Math.floor((double) aPerformance.getAudience() / 5);
-        }
-
-        return volumeCredits;
-    }
 }
