@@ -10,6 +10,7 @@
 --------
 
 ## 목차
-|챕터| 목차 | 내용 요약                       | 학습 기록            |
-|---|---|-----------------------------|------------------|
-|1| 리팩터링:첫 번째 예시| [chapter1](document/ch1.md) | [Pull Request](https://github.com/connieya/refactoring-2nd-edition/pull/1) |
+| 챕터 | 목차           | 내용 요약                       | 학습 기록                                                                      |
+|----|--------------|-----------------------------|----------------------------------------------------------------------------|
+| 1  | 리팩터링:첫 번째 예시 | [chapter1](document/ch1.md) | [Pull Request](https://github.com/connieya/refactoring-2nd-edition/pull/1) |
+| 2  | 리팩터링 원칙      | [chapter2](document/ch2.md) | [Pull Request](https://github.com/connieya/refactoring-2nd-edition/pull/2) |
