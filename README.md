@@ -14,3 +14,4 @@
 |----|--------------|-----------------------------|----------------------------------------------------------------------------|
 | 1  | 리팩터링:첫 번째 예시 | [chapter1](document/ch1.md) | [Pull Request](https://github.com/connieya/refactoring-2nd-edition/pull/1) |
 | 2  | 리팩터링 원칙      | [chapter2](document/ch2.md) | [Pull Request](https://github.com/connieya/refactoring-2nd-edition/pull/2) |
+| 3  | 코드에서 나는 악취    | [chapter3](document/ch3.md) | [Pull Request](https://github.com/connieya/refactoring-2nd-edition/pull/3) |
